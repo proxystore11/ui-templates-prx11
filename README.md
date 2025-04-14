@@ -20,13 +20,13 @@ Before Usage, make sure you have XUI-Subscription-Template installed.
 
 ```bash
 sudo git clone https://github.com/dev-ir/xui-templates-blackeyes.git /opt/DVHOST/views/templates/blackeyes/
-sudo sed -i 's/^TEMPLATE_NAME=.*/TEMPLATE_NAME=blackeyes/' /opt/DVHOST/dvhost.config
+sudo sed -i 's/^TEMPLATE_NAME=.*/TEMPLATE_NAME=prx11/' /opt/DVHOST/dvhost.config
 ```
 
 # Remove Older Version
 If you already have it installed, remove the previous version first.
 ```
-rm -rf /opt/DVHOST/views/templates/blackeyes
+rm -rf /opt/DVHOST/views/templates/prx11
 ```
 
 <details>
@@ -38,7 +38,7 @@ nano /opt/DVHOST/dvhost.config
 ## Template name 
 ```
 # Replace Template name 
-TEMPLATE_NAME=blackeyes
+TEMPLATE_NAME=prx11
 ```
 </details>
 
@@ -57,13 +57,13 @@ systemctl status DVHOST_TEMPLATE
 
 ```bash
 sudo git clone https://github.com/dev-ir/xui-templates-blackeyes.git /opt/DVHOST/views/templates/blackeyes/
-sudo sed -i 's/^TEMPLATE_NAME=.*/TEMPLATE_NAME=blackeyes/' /opt/DVHOST/dvhost.config
+sudo sed -i 's/^TEMPLATE_NAME=.*/TEMPLATE_NAME=prx11/' /opt/DVHOST/dvhost.config
 ```
 
 # حذف نسخه قبلی
 اگر نسخه قبلی دارد ابتدا حذف سپس اقدام به نصب نمایید.
 ```
-rm -rf /opt/DVHOST/views/templates/blackeyes
+rm -rf /opt/DVHOST/views/templates/prx11
 ```
 
 <details>
@@ -77,7 +77,7 @@ nano /opt/DVHOST/dvhost.config
 حالا میبایست نام پوسته جایگزین پوسته پیشفرض کنید
 ```
 # Replace Template name 
-TEMPLATE_NAME=blackeyes
+TEMPLATE_NAME=prx11
 ```
 </details>
 
