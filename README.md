@@ -1,5 +1,5 @@
 # ui-templates-prx11
-پوسته جذاب برای پنل سنایی 
+#پوسته جذاب برای پنل سنایی 
 <p align="center">
   <a href="https://github.com/dev-ir/xui-templates-blackeyes" target="_blank" rel="noopener noreferrer">
     <img src="prx11.png" alt="SubPage screenshots" width="800" height="auto">
@@ -12,7 +12,7 @@ Before Usage, make sure you have XUI-Subscription-Template installed.
 <details>
   <summary>📺 Installation Tutorial</summary>
   <a href="https://www.youtube.com/watch?v=tUMck0_khRQ" target="_blank">
-    <img src="https://img.youtube.com/vi/tUMck0_khRQ/0.jpg" alt="XUI Template Installation Guide">
+    <img src="https://img.youtube.com/vi/tUMck0_khRQ/0.jpg" alt="XUI Template Installation Guide">پ
   </a>
 </details>
 
