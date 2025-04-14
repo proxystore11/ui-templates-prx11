@@ -621,7 +621,8 @@
             font-family: 'Roboto', sans-serif;
         }
         .light-theme .support-btn {
-            color: var(--light-text);
+            color: #ffffff;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         }
         .dark-theme .support-btn {
             color: #ffffff;
@@ -636,6 +637,14 @@
         .telegram {
             background: linear-gradient(45deg, #3b82f6, #7c3aed);
         }
+        .light-theme .support-btn i {
+            color: #ffffff;
+            filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.4));
+        }
+        .dark-theme .support-btn i {
+            color: #ffffff;
+            filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
+        }
         .support:hover {
             background: linear-gradient(45deg, #059669, #10b981);
             transform: translateY(-4px);
@@ -645,6 +654,14 @@
             background: linear-gradient(45deg, #2563eb, #6d28d9);
             transform: translateY(-4px);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+        }
+        .light-theme .support-btn:hover i {
+            color: #f0f0f0;
+            transform: scale(1.1);
+        }
+        .dark-theme .support-btn:hover i {
+            color: #e0e0e0;
+            transform: scale(1.1);
         }
 
         .qr-modal {
@@ -1152,7 +1169,7 @@
                 return getTranslation('invalid');
             }
             if (bytes === 0) {
-                return getTranslation('used-up');
+                return getTranslation('unlimited');
             }
             const k = 1024;
             const units = lang === 'en'
@@ -1181,11 +1198,39 @@
                 alert(getTranslation('no-text'));
                 return;
             }
-            navigator.clipboard.writeText(text).then(() => {
-                alert(getTranslation('copy-success'));
-            }).catch(() => {
+            try {
+                if (navigator.clipboard && window.isSecureContext) {
+                    navigator.clipboard.writeText(text).then(() => {
+                        alert(getTranslation('copy-success'));
+                    }).catch(() => {
+                        fallbackCopyText(text);
+                    });
+                } else {
+                    fallbackCopyText(text);
+                }
+            } catch (error) {
+                console.error('Copy error:', error);
                 alert(getTranslation('copy-error'));
-            });
+            }
+        }
+
+        function fallbackCopyText(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.opacity = '0';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                alert(getTranslation('copy-success'));
+            } catch (error) {
+                console.error('Fallback copy error:', error);
+                alert(getTranslation('copy-error'));
+            } finally {
+                document.body.removeChild(textArea);
+            }
         }
 
         function showQR(text) {
@@ -1307,19 +1352,19 @@
                 const down = Number(data.down) || 0;
                 const total = Number(data.total) || 0;
                 const usedVolume = up + down;
-                const remainingVolume = Math.max(0, total - usedVolume);
+                const remainingVolume = total === 0 ? 0 : Math.max(0, total - usedVolume);
                 const usagePercentage = total > 0 ? Math.min((usedVolume / total) * 100, 100) : 0;
-                const isActive = data.enable && remainingVolume > 0;
+                const isActive = data.enable && (total === 0 || remainingVolume > 0);
 
                 userNameElement.textContent = `${getTranslation('user')}${safeEmail}`;
                 statusElement.className = `status ${isActive ? 'status-active' : 'status-inactive'}`;
                 statusTextElement.textContent = isActive ? getTranslation('active') : getTranslation('inactive');
                 progressBarElement.style.width = `${usagePercentage}%`;
-                uploadVolumeElement.textContent = formatSize(up);
-                downloadVolumeElement.textContent = formatSize(down);
-                usedVolumeElement.textContent = formatSize(usedVolume);
-                remainingVolumeElement.textContent = formatSize(remainingVolume);
-                totalVolumeElement.textContent = formatSize(total);
+                uploadVolumeElement.textContent = up === 0 ? getTranslation('not-used') : formatSize(up);
+                downloadVolumeElement.textContent = down === 0 ? getTranslation('not-used') : formatSize(down);
+                usedVolumeElement.textContent = usedVolume === 0 ? getTranslation('not-used') : formatSize(usedVolume);
+                remainingVolumeElement.textContent = total === 0 ? getTranslation('unlimited') : formatSize(remainingVolume);
+                totalVolumeElement.textContent = total === 0 ? getTranslation('unlimited') : formatSize(total);
                 expiryDateElement.textContent = data.expiryTime && Number(data.expiryTime) > 0
                     ? new Date(Number(data.expiryTime)).toLocaleDateString(lang === 'fa' ? 'fa-IR' : 'en-US')
                     : getTranslation('unlimited');
