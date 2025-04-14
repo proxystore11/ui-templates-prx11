@@ -985,11 +985,12 @@
         </div>
 
         <div class="support-icons">
-            <a id="support-link" class="support-btn support" href="https://t.me/proxystoreadmin">
+<% if (data.TELEGRAM_URL || data.WHATSAPP_URL) { %>
+            <a id="support-link" class="support-btn support" href="data.TELEGRAM_URL">
                 <i class="fas fa-headset"></i>
                 <span data-i18n="support"></span>
             </a>
-            <a id="telegram-link" class="support-btn telegram" href="https://t.me/proxystore11">
+            <a id="telegram-link" class="support-btn telegram"ata.WHATSAPP_URL">
                 <i class="fab fa-telegram-plane"></i>
                 <span data-i18n="channel"></span>
             </a>
