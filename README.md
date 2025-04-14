@@ -1,5 +1,5 @@
 # ui-templates-prx11
-*مشکلات را ایشو کنید*
+
 <p align="center">
   <a href="https://github.com/dev-ir/xui-templates-blackeyes" target="_blank" rel="noopener noreferrer">
     <img src="prx11.png" alt="SubPage screenshots" width="800" height="auto">
@@ -86,7 +86,7 @@ TEMPLATE_NAME=prx11
 systemctl restart DVHOST_TEMPLATE
 systemctl status DVHOST_TEMPLATE
 ```
-
+*مشکلات،باگ ها را ایشو کنید*
 ## 🙏 Support with Crypto 
 **We don't need financial support, only Star (⭐) is enough, thank you.**
 - USDT (TRC20): `TVUqVMoCEe5DVUoxmPg8MwmgcHvZLqLjr4`
