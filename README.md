@@ -89,7 +89,7 @@ systemctl status DVHOST_TEMPLATE
 *مشکلات،باگ ها را ایشو کنید*
 ## 🙏 Support with Crypto 
 **We don't need financial support, only Star (⭐) is enough, thank you.**
-- USDT (TRC20): `TVUqVMoCEe5DVUoxmPg8MwmgcHvZLqLjr4`
+- USDT (TRC20): ``
 
 ## 📧 Join Telegram Channel
 TG: https://t.me/+EpErnDsDPhw3ZThk
