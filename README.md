@@ -56,7 +56,7 @@ systemctl status DVHOST_TEMPLATE
 ابتدا فایل رو به سرور بفرستید. با دستور زیر میتونید این کارو بکنید:
 
 ```bash
-sudo git clone https://github.com/dev-ir/xui-templates-blackeyes.git /opt/DVHOST/views/templates/blackeyes/
+sudo git clone https://github.com/proxystore11/ui-templates-prx11.git /opt/DVHOST/views/templates/blackeyes/
 sudo sed -i 's/^TEMPLATE_NAME=.*/TEMPLATE_NAME=prx11/' /opt/DVHOST/dvhost.config
 ```
 
