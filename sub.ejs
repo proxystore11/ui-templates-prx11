@@ -1,0 +1,1442 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title"></title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/shabnam-font@5.0.0/dist/font-face.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
+    <style>
+        :root {
+            --light-bg: linear-gradient(135deg, rgba(240, 242, 245, 0.9), rgba(225, 229, 235, 0.8)); /* ملایم‌تر */
+            --dark-bg: linear-gradient(145deg, rgba(51, 65, 85, 0.35), rgba(30, 41, 59, 0.25));
+            --light-border: 2px solid rgba(180, 185, 195, 0.7); /* حاشیه قوی‌تر */
+            --dark-border: 1px solid rgba(255, 255, 255, 0.2);
+            --light-shadow: 0 25px 50px rgba(0, 0, 0, 0.25), 0 10px 20px rgba(0, 0, 0, 0.2); /* سایه عمیق‌تر */
+            --dark-shadow: 0 10px 20px rgba(0, 0, 0, 0.4), 0 4px 8px rgba(0, 0, 0, 0.2);
+            --light-text: #1e293b; /* رنگ متن تیره‌تر برای کنتراست */
+            --dark-text: #e0e6ed;
+            --primary-gradient: linear-gradient(45deg, #3b82f6, #7c3aed);
+        }
+
+        body {
+            font-family: 'Shabnam', -apple-system, BlinkMacSystemFont, sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            transition: background 0.5s ease, color 0.5s ease;
+            overflow-x: hidden;
+            position: relative;
+        }
+        body[lang="fa"] {
+            direction: rtl;
+            text-align: right;
+        }
+        body[lang="en"] {
+            direction: ltr;
+            text-align: left;
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        body.light-theme {
+            background: linear-gradient(135deg, rgba(240, 242, 245, 1), rgba(225, 229, 235, 0.9)); /* پس‌زمینه ملایم */
+            color: var(--light-text);
+        }
+        body.dark-theme {
+            background: #0d1117;
+            color: var(--dark-text);
+        }
+        body.light-theme::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(59, 130, 246, 0.03), rgba(236, 72, 153, 0.03));
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .theme-toggle, .language-toggle {
+            position: fixed;
+            z-index: 1000;
+        }
+        .theme-toggle {
+            left: 15px;
+            top: 15px;
+        }
+        .language-toggle {
+            right: 15px;
+            top: 15px;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 28px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, #e0e7ff, #f1f5f9);
+            transition: background 0.2s ease, transform 0.2s ease;
+            border-radius: 28px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+        input:checked + .slider {
+            background: var(--primary-gradient);
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 3px;
+            bottom: 3px;
+            background: #ffffff;
+            transition: transform 0.2s ease;
+            border-radius: 50%;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+        }
+        input:checked + .slider:before {
+            transform: translateX(22px);
+        }
+        .slider i {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1em;
+            transition: opacity 0.2s ease;
+        }
+        .theme-toggle .slider .fa-sun {
+            left: 6px;
+            color: #f472b6;
+            opacity: 1;
+        }
+        .theme-toggle .slider .fa-moon {
+            right: 6px;
+            color: #a855f7;
+            opacity: 0;
+        }
+        .theme-toggle input:checked + .slider .fa-sun {
+            opacity: 0;
+        }
+        .theme-toggle input:checked + .slider .fa-moon {
+            opacity: 1;
+        }
+        .language-toggle .slider .fa-globe-americas {
+            left: 6px;
+            color: #3b82f6;
+            opacity: 1;
+        }
+        .language-toggle input:checked + .slider .fa-globe-americas {
+            opacity: 0;
+        }
+        .language-toggle .slider .fa-globe {
+            right: 6px;
+            color: #ec4899;
+            opacity: 0;
+        }
+        .language-toggle input:checked + .slider .fa-globe {
+            opacity: 1;
+        }
+
+        .container {
+            max-width: 680px;
+            margin: 60px auto 0 auto;
+            padding: 40px;
+            border-radius: 28px;
+            transition: all 0.4s ease;
+            position: relative;
+            z-index: 1;
+        }
+        .light-theme .container {
+            background: var(--light-bg);
+            backdrop-filter: blur(18px);
+            border: var(--light-border);
+            box-shadow: var(--light-shadow);
+        }
+        .dark-theme .container {
+            background: var(--dark-bg);
+            backdrop-filter: blur(14px);
+            border: var(--dark-border);
+            box-shadow: var(--dark-shadow);
+        }
+
+        .user-box {
+            padding: 40px;
+            border-radius: 28px;
+            margin-bottom: 40px;
+            transition: all 0.4s ease;
+            position: relative;
+            text-align: center;
+        }
+        .light-theme .user-box {
+            background: var(--light-bg);
+            backdrop-filter: blur(16px);
+            border: var(--light-border);
+            box-shadow: var(--light-shadow);
+        }
+        .dark-theme .user-box {
+            background: var(--dark-bg);
+            backdrop-filter: blur(12px);
+            border: var(--dark-border);
+            box-shadow: var(--dark-shadow);
+        }
+        .user-box .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .user-box .logo {
+            width: 140px;
+            height: 140px;
+            filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.25));
+            transition: transform 0.3s ease;
+        }
+        .user-box .logo:hover {
+            transform: scale(1.05);
+        }
+        .user-box .user-name {
+            font-size: 1.8em;
+            margin: 15px 0;
+            font-weight: 700;
+            transition: color 0.3s ease;
+        }
+        .light-theme .user-box .user-name {
+            color: var(--light-text);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .dark-theme .user-box .user-name {
+            color: var(--dark-text);
+        }
+
+        .user-box .status {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px;
+            border-radius: 20px;
+            margin: 20px auto;
+            width: 140px;
+            font-size: 1.1em;
+            font-weight: 700;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        @keyframes glow {
+            0% { box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); }
+            50% { box-shadow: 0 0 30px rgba(0, 0, 0, 0.4); }
+            100% { box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); }
+        }
+        .light-theme .status-active {
+            background: linear-gradient(45deg, #3b82f6, #7c3aed, #ec4899);
+            color: #ffffff;
+            animation: glow 2s ease-in-out infinite;
+        }
+        .light-theme .status-inactive {
+            background: linear-gradient(45deg, #ef4444, #fb7185);
+            color: #ffffff;
+        }
+        .dark-theme .status-active {
+            background: linear-gradient(45deg, #60a5fa, #a855f7);
+            color: #ffffff;
+        }
+        .dark-theme .status-inactive {
+            background: linear-gradient(45deg, #f87171, #fca5a5);
+            color: #ffffff;
+        }
+        .status:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+        }
+
+        .user-box .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 18px;
+            margin-top: 25px;
+            align-items: stretch;
+        }
+        .user-box .info-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        body[lang="en"] .user-box .info-item {
+            text-align: left;
+        }
+        .light-theme .user-box .info-item {
+            background: var(--light-bg);
+            backdrop-filter: blur(14px);
+            border: var(--light-border);
+            box-shadow: var(--light-shadow);
+            color: var(--light-text);
+        }
+        .dark-theme .user-box .info-item {
+            background: var(--dark-bg);
+            backdrop-filter: blur(10px);
+            border: var(--dark-border);
+            box-shadow: var(--dark-shadow);
+            color: var(--dark-text);
+        }
+        .user-box .info-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 14px 28px rgba(0, 0, 0, 0.2);
+        }
+        .user-box .info-item i {
+            font-size: 1.1em;
+            flex-shrink: 0;
+            margin: 0 8px;
+            transition: color 0.3s ease;
+        }
+        .light-theme .info-item i {
+            color: #6d28d9; /* رنگ آیکون برای خوانایی */
+            filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+        }
+        .dark-theme .info-item i {
+            color: #93c5fd;
+        }
+        .user-box .progress-container {
+            margin: 20px 0;
+        }
+        .user-box .progress-bar {
+            width: 100%;
+            border-radius: 20px;
+            height: 16px;
+            overflow: hidden;
+            position: relative;
+            transition: background 0.3s ease;
+            box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.15);
+        }
+        .light-theme .user-box .progress-bar {
+            background: linear-gradient(90deg, rgba(203, 213, 225, 0.5), rgba(241, 245, 249, 0.5));
+        }
+        .dark-theme .user-box .progress-bar {
+            background: rgba(55, 65, 81, 0.5);
+        }
+        .user-box .progress {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #7c3aed, #ec4899);
+            border-radius: 20px;
+            transition: width 0.6s ease-in-out;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+            animation: progressPulse 2.5s infinite ease-in-out;
+        }
+        @keyframes progressPulse {
+            0% { opacity: 0.9; }
+            50% { opacity: 1; }
+            100% { opacity: 0.9; }
+        }
+
+        .accordion {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .accordion-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+        .light-theme .accordion-header {
+            background: var(--light-bg);
+            backdrop-filter: blur(14px);
+            border: var(--light-border);
+            color: var(--light-text);
+            box-shadow: var(--light-shadow);
+        }
+        .dark-theme .accordion-header {
+            background: var(--dark-bg);
+            backdrop-filter: blur(12px);
+            border: var(--dark-border);
+            color: var(--dark-text);
+            box-shadow: var(--dark-shadow);
+        }
+        .light-theme .accordion-header:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 14px 28px rgba(0, 0, 0, 0.2);
+        }
+        .dark-theme .accordion-header:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+        }
+        .accordion-header i {
+            transition: transform 0.3s ease;
+            font-size: 1em;
+        }
+        .accordion-header.active i {
+            transform: rotate(180deg);
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out, opacity 0.4s ease-out, padding 0.4s ease-out;
+            opacity: 0;
+            padding: 0 10px;
+        }
+        .accordion-content.show {
+            max-height: 600px;
+            opacity: 1;
+            padding: 10px;
+        }
+        .subcategory {
+            padding: 14px;
+        }
+
+        .config-box {
+            padding: 30px;
+            border-radius: 28px;
+            margin-bottom: 25px;
+            transition: all 0.4s ease;
+        }
+        .light-theme .config-box {
+            background: var(--light-bg);
+            backdrop-filter: blur(16px);
+            border: var(--light-border);
+            box-shadow: var(--light-shadow);
+        }
+        .dark-theme .config-box {
+            background: var(--dark-bg);
+            backdrop-filter: blur(12px);
+            border: var(--dark-border);
+            box-shadow: var(--dark-shadow);
+        }
+        .config-title {
+            font-size: 1.3em;
+            font-weight: 700;
+            margin-bottom: 14px;
+            transition: color 0.3s ease;
+        }
+        .light-theme .config-title {
+            color: var(--light-text);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+        .dark-theme .config-title {
+            color: var(--dark-text);
+        }
+        .config-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            border-radius: 20px;
+            margin: 12px 0;
+            transition: all 0.3s ease;
+        }
+        .light-theme .config-item {
+            background: var(--light-bg);
+            backdrop-filter: blur(14px);
+            border: var(--light-border);
+            box-shadow: var(--light-shadow);
+        }
+        .dark-theme .config-item {
+            background: var(--dark-bg);
+            backdrop-filter: blur(10px);
+            border: var(--dark-border);
+            box-shadow: var(--dark-shadow);
+        }
+        .config-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 14px 28px rgba(0, 0, 0, 0.2);
+        }
+        .config-text {
+            font-size: 0.95em;
+            transition: color 0.3s ease;
+        }
+        .light-theme .config-text {
+            color: var(--light-text);
+        }
+        .dark-theme .config-text {
+            color: var(--dark-text);
+        }
+        .config-actions i {
+            margin: 0 10px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .light-theme .config-actions i {
+            color: #ec4899;
+            filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+        }
+        .dark-theme .config-actions i {
+            color: #93c5fd;
+        }
+        .light-theme .config-actions i:hover {
+            color: #db2777;
+            transform: scale(1.15);
+        }
+        .dark-theme .config-actions i:hover {
+            color: #60a5fa;
+            transform: scale(1.1);
+        }
+
+        .apps-list {
+            padding: 20px;
+            border-radius: 28px;
+            transition: all 0.4s ease;
+        }
+        .light-theme .apps-list {
+            background: var(--light-bg);
+            backdrop-filter: blur(16px);
+            border: var(--light-border);
+            box-shadow: var(--light-shadow);
+        }
+        .dark-theme .apps-list {
+            background: var(--dark-bg);
+            backdrop-filter: blur(12px);
+            border: var(--dark-border);
+            box-shadow: var(--dark-shadow);
+        }
+        .app-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px;
+            margin: 14px 0;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+        .light-theme .app-item {
+            background: var(--light-bg);
+            backdrop-filter: blur(14px);
+            border: var(--light-border);
+            box-shadow: var(--light-shadow);
+        }
+        .dark-theme .app-item {
+            background: var(--dark-bg);
+            backdrop-filter: blur(10px);
+            border: var(--dark-border);
+            box-shadow: var(--dark-shadow);
+        }
+        .app-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 14px 28px rgba(0, 0, 0, 0.2);
+        }
+        .app-name {
+            font-size: 0.95em;
+            transition: color 0.3s ease;
+        }
+        .light-theme .app-name {
+            color: var(--light-text);
+        }
+        .dark-theme .app-name {
+            color: var(--dark-text);
+        }
+        .app-link {
+            font-size: 0.9em;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            padding: 6px 12px;
+            border-radius: 12px;
+        }
+        .light-theme .app-link {
+            background: var(--primary-gradient);
+            color: #ffffff;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+        }
+        .dark-theme .app-link {
+            background: linear-gradient(45deg, #4b5efc, #9f7aea);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+        }
+        .light-theme .app-link:hover {
+            background: linear-gradient(45deg, #2563eb, #6d28d9);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+        .dark-theme .app-link:hover {
+            background: linear-gradient(45deg, #3b82f6, #7c3aed);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .support-icons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 25px;
+            margin: 25px 0;
+            padding: 25px;
+            border-radius: 28px;
+            transition: all 0.4s ease;
+            flex-wrap: wrap;
+        }
+        .light-theme .support-icons {
+            background: var(--light-bg);
+            backdrop-filter: blur(16px);
+            border: var(--light-border);
+            box-shadow: var(--light-shadow);
+        }
+        .dark-theme .support-icons {
+            background: var(--dark-bg);
+            backdrop-filter: blur(12px);
+            border: var(--dark-border);
+            box-shadow: var(--dark-shadow);
+        }
+        .support-btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 14px 28px;
+            text-decoration: none;
+            border-radius: 20px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+        body[lang="fa"] .support-btn {
+            font-family: 'Shabnam', sans-serif;
+        }
+        body[lang="en"] .support-btn {
+            font-family: 'Roboto', sans-serif;
+        }
+        .light-theme .support-btn {
+            color: var(--light-text);
+        }
+        .dark-theme .support-btn {
+            color: #ffffff;
+        }
+        .support-btn i {
+            font-size: 1.2em;
+            margin: 0 8px;
+        }
+        .support {
+            background: linear-gradient(45deg, #10b981, #34d399);
+        }
+        .telegram {
+            background: linear-gradient(45deg, #3b82f6, #7c3aed);
+        }
+        .support:hover {
+            background: linear-gradient(45deg, #059669, #10b981);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+        }
+        .telegram:hover {
+            background: linear-gradient(45deg, #2563eb, #6d28d9);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+        }
+
+        .qr-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .qr-modal.show {
+            display: flex;
+        }
+        .qr-content {
+            padding: 40px;
+            border-radius: 28px;
+            position: relative;
+            transition: all 0.4s ease;
+        }
+        .light-theme .qr-content {
+            background: var(--light-bg);
+            backdrop-filter: blur(16px);
+            border: var(--light-border);
+            box-shadow: var(--light-shadow);
+        }
+        .dark-theme .qr-content {
+            background: var(--dark-bg);
+            backdrop-filter: blur(12px);
+            border: var(--dark-border);
+            box-shadow: var(--dark-shadow);
+        }
+        .qr-content canvas {
+            max-width: 260px;
+            max-height: 260px;
+            padding: 14px;
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            font-size: 28px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .light-theme .close-btn {
+            color: var(--light-text);
+            filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+        }
+        .dark-theme .close-btn {
+            color: var(--dark-text);
+        }
+        .light-theme .close-btn:hover {
+            color: #ec4899;
+            transform: scale(1.15);
+        }
+        .dark-theme .close-btn:hover {
+            color: #93c5fd;
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 500px) {
+            .container {
+                padding: 20px;
+                max-width: 100%;
+                margin-top: 40px;
+            }
+            .support-icons {
+                flex-direction: column;
+                gap: 18px;
+            }
+            .support-btn {
+                padding: 12px 24px;
+                font-size: 0.9em;
+                width: 100%;
+                max-width: 220px;
+            }
+            .user-box {
+                padding: 20px;
+            }
+            .user-box .logo {
+                width: 100px;
+                height: 100px;
+            }
+            .user-box .user-name {
+                font-size: 1.5em;
+            }
+            .user-box .status {
+                width: 120px;
+                padding: 10px;
+                font-size: 0.95em;
+            }
+            .user-box .info-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            .user-box .info-item {
+                padding: 10px;
+                font-size: 0.85em;
+            }
+            .user-box .info-item i {
+                font-size: 1em;
+                margin: 0 6px;
+            }
+            .user-box .progress-bar {
+                height: 14px;
+            }
+            .apps-list {
+                padding: 15px;
+            }
+            .app-item {
+                padding: 12px;
+                margin: 12px 0;
+            }
+            .app-name, .app-link {
+                font-size: 0.85em;
+            }
+            .theme-toggle, .language-toggle {
+                top: 12px;
+            }
+            .accordion-header {
+                padding: 14px;
+                font-size: 1.1em;
+            }
+            .subcategory {
+                padding: 12px;
+            }
+            .qr-content {
+                padding: 25px;
+            }
+            .qr-content canvas {
+                max-width: 220px;
+                max-height: 220px;
+            }
+            .config-box {
+                padding: 20px;
+            }
+            .config-item {
+                padding: 10px;
+                margin: 10px 0;
+            }
+            .config-title {
+                font-size: 1.2em;
+            }
+            .config-text {
+                font-size: 0.9em;
+            }
+            .config-actions i {
+                font-size: 1.1em;
+                margin: 0 8px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                max-width: 680px;
+            }
+            .user-box .info-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .support-icons {
+                flex-direction: row;
+                gap: 25px;
+            }
+            .support-btn {
+                width: calc(25% - 18px);
+                max-width: none;
+            }
+        }
+    </style>
+</head>
+<body class="light-theme" lang="fa">
+    <div class="theme-toggle">
+        <label class="switch">
+            <input type="checkbox" id="themeSwitch" aria-label="تغییر تم">
+            <span class="slider">
+                <i class="fas fa-sun"></i>
+                <i class="fas fa-moon"></i>
+            </span>
+        </label>
+    </div>
+    <div class="language-toggle">
+        <label class="switch">
+            <input type="checkbox" id="languageSwitch" aria-label="تغییر زبان">
+            <span class="slider">
+                <i class="fas fa-globe-americas"></i>
+                <i class="fas fa-globe"></i>
+            </span>
+        </label>
+    </div>
+    <div class="container">
+        <div class="user-box">
+            <div class="logo-container">
+                <svg class="logo" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+                            <stop offset="50%" style="stop-color:#7c3aed;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    <circle cx="60" cy="60" r="50" fill="url(#gradient)" stroke="#fff" stroke-width="2"/>
+                    <path d="M60 40c-12 0-18 8-18 18s6 18 18 18 18-8 18-18-6-18-18-18zm0 28c-6 0-10-4-10-10s4-10 10-10 10 4 10 10-4 10-10 10z" fill="#fff"/>
+                    <path d="M40 80c0 8 16 12 20 12s20-4 20-12" fill="#fff"/>
+                </svg>
+            </div>
+            <div class="user-name" id="user-name"></div>
+            <div class="status" id="status">
+                <span id="status-text"></span>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress" id="progress-bar"></div>
+                </div>
+            </div>
+            <div class="info-grid">
+                <div class="info-item">
+                    <i class="fas fa-upload"></i>
+                    <span data-i18n="upload-volume"></span>
+                    <span id="upload-volume"></span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-download"></i>
+                    <span data-i18n="download-volume"></span>
+                    <span id="download-volume"></span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span data-i18n="used-volume"></span>
+                    <span id="used-volume"></span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-box-open"></i>
+                    <span data-i18n="remaining-volume"></span>
+                    <span id="remaining-volume"></span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-box"></i>
+                    <span data-i18n="total-volume"></span>
+                    <span id="total-volume"></span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span data-i18n="expiry-date"></span>
+                    <span id="expiry-date"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion">
+            <div class="accordion-header main-tab" role="button" tabindex="0" aria-expanded="false">
+                <span data-i18n="connection-details"></span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="accordion-content">
+                <div class="accordion">
+                    <div class="accordion-header sub-tab" role="button" tabindex="0" aria-expanded="false">
+                        <span data-i18n="configs"></span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="config-box" id="config-box"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-header main-tab" role="button" tabindex="0" aria-expanded="false">
+                <span data-i18n="apps"></span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="accordion-content">
+                <div class="apps-list">
+                    <div class="accordion">
+                        <div class="accordion-header sub-tab" role="button" tabindex="0" aria-expanded="false">
+                            <span data-i18n="android"></span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="subcategory">
+                                <div class="app-item">
+                                    <span class="app-name">Hiddify</span>
+                                    <a href="https://play.google.com/store/apps/details?id=app.hiddify.com" target="_blank" class="app-link" data-i18n="get"></a>
+                                </div>
+                                <div class="app-item">
+                                    <span class="app-name">v2rayNG</span>
+                                    <a href="https://play.google.com/store/apps/details?id=com.v2ray.ang" target="_blank" class="app-link" data-i18n="get"></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion">
+                        <div class="accordion-header sub-tab" role="button" tabindex="0" aria-expanded="false">
+                            <span data-i18n="iphone"></span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="subcategory">
+                                <div class="app-item">
+                                    <span class="app-name">Streisand</span>
+                                    <a href="https://apps.apple.com/us/app/streisand/id6450534064" target="_blank" class="app-link" data-i18n="get"></a>
+                                </div>
+                                <div class="app-item">
+                                    <span class="app-name">V2Box</span>
+                                    <a href="https://apps.apple.com/us/app/v2box/id1234567890" target="_blank" class="app-link" data-i18n="get"></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion">
+                        <div class="accordion-header sub-tab" role="button" tabindex="0" aria-expanded="false">
+                            <span data-i18n="windows"></span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="subcategory">
+                                <div class="app-item">
+                                    <span class="app-name">v2rayN</span>
+                                    <a href="https://github.com/2dust/v2rayN/releases" target="_blank" class="app-link" data-i18n="get"></a>
+                                </div>
+                                <div class="app-item">
+                                    <span class="app-name">Hiddify</span>
+                                    <a href="https://github.com/hiddify/hiddify-app/releases" target="_blank" class="app-link" data-i18n="get"></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="support-icons">
+            <a id="support-link" class="support-btn support" href="https://t.me/proxystoreadmin">
+                <i class="fas fa-headset"></i>
+                <span data-i18n="support"></span>
+            </a>
+            <a id="telegram-link" class="support-btn telegram" href="https://t.me/proxystore11">
+                <i class="fab fa-telegram-plane"></i>
+                <span data-i18n="channel"></span>
+            </a>
+        </div>
+    </div>
+
+    <div class="qr-modal" id="qrModal">
+        <div class="qr-content">
+            <span class="close-btn" role="button" tabindex="0" aria-label="بستن" onclick="closeQR()">×</span>
+            <canvas id="qrcode"></canvas>
+        </div>
+    </div>
+
+<script>
+    const data = {
+        id: '<%= data.id || "" %>',
+        email: '<%= data.email || "کاربر ناشناس" %>',
+        suburl_content: '<%= data.suburl_content || "" %>',
+        enable: <%= data.enable || false %>,
+        up: <%= data.up || 0 %>,
+        down: <%= data.down || 0 %>,
+        total: <%= data.total || 0 %>,
+        expiryTime: <%= data.expiryTime || 0 %>
+    };
+
+    const translations = {
+        fa: {
+            'page-title': 'مشخصات فیلترشکن',
+            'user': 'کاربر: ',
+            'active': 'فعال',
+            'inactive': 'غیرفعال',
+            'upload-volume': 'آپلود: ',
+            'download-volume': 'دانلود: ',
+            'used-volume': 'حجم مصرف‌شده: ',
+            'remaining-volume': 'حجم مانده: ',
+            'total-volume': 'حجم کلی: ',
+            'expiry-date': 'تاریخ انقضا: ',
+            'connection-details': 'جزئیات اتصال',
+            'configs': 'کانفیگ‌ها',
+            'apps': 'برنامه‌ها',
+            'android': 'اندروید',
+            'iphone': 'آیفون',
+            'windows': 'ویندوز',
+            'get': 'دریافت',
+            'support': 'پشتیبانی',
+            'channel': 'کانال',
+            'config': 'کانفیگ ',
+            'no-config': 'کانفیگ موجود نیست: ',
+            'no-config-data': 'داده نامعتبر',
+            'no-config-provided': 'کانفیگ ارائه نشده',
+            'copy-success': 'متن کپی شد!',
+            'copy-error': 'خطا در کپی کردن متن!',
+            'no-text': 'متن برای کپی وجود ندارد!',
+            'qr-error': 'لینک برای تولید QR کد وجود ندارد!',
+            'qr-failed': 'خطایی در تولید QR کد رخ داد!',
+            'data-error': 'خطا: داده‌ها یافت نشد',
+            'invalid': 'نامعتبر',
+            'unlimited': 'نامحدود',
+            'not-used': 'مصرف نشده',
+            'used-up': 'تمام شده', // اضافه شده
+            'parse-config-error': 'خطا در پردازش کانفیگ‌ها!'
+        },
+        en: {
+            'page-title': 'VPN Details',
+            'user': 'User: ',
+            'active': 'Active',
+            'inactive': 'Inactive',
+            'upload-volume': 'Upload: ',
+            'download-volume': 'Download: ',
+            'used-volume': 'Used Volume: ',
+            'remaining-volume': 'Remaining Volume: ',
+            'total-volume': 'Total Volume: ',
+            'expiry-date': 'Expiry Date: ',
+            'connection-details': 'Connection Details',
+            'configs': 'Configs',
+            'apps': 'Apps',
+            'android': 'Android',
+            'iphone': 'iPhone',
+            'windows': 'Windows',
+            'get': 'Get',
+            'support': 'Support',
+            'channel': 'Channel',
+            'config': 'Config ',
+            'no-config': 'No Config Available: ',
+            'no-config-data': 'Invalid Data',
+            'no-config-provided': 'No Config Provided',
+            'copy-success': 'Text Copied!',
+            'copy-error': 'Error Copying Text!',
+            'no-text': 'No Text to Copy!',
+            'qr-error': 'No Link to Generate QR Code!',
+            'qr-failed': 'Failed to Generate QR Code!',
+            'data-error': 'Error: Data Not Found',
+            'invalid': 'Invalid',
+            'unlimited': 'Unlimited',
+            'not-used': 'Not Used',
+            'used-up': 'Used Up', // اضافه شده
+            'parse-config-error': 'Error Parsing Configs!'
+        }
+    };
+
+    function getTranslation(key) {
+        const lang = document.body.getAttribute('lang') || 'fa';
+        return translations[lang][key] || key;
+    }
+
+    function sanitizeInput(input) {
+        return DOMPurify.sanitize(input || '');
+    }
+
+    function updateLanguage() {
+        const lang = document.body.getAttribute('lang') || 'fa';
+        document.querySelectorAll('[data-i18n]').forEach(element => {
+            const key = element.getAttribute('data-i18n');
+            element.textContent = translations[lang][key] || key;
+        });
+
+        try {
+            const safeEmail = sanitizeInput(data.email);
+            document.getElementById('page-title').textContent = `${translations[lang]['page-title']} ${safeEmail}`;
+        } catch (error) {
+            console.error('Error updating page title:', error);
+            document.getElementById('page-title').textContent = getTranslation('data-error');
+        }
+    }
+
+    function toggleLanguage() {
+        const body = document.body;
+        const languageSwitch = document.getElementById('languageSwitch');
+        const newLang = body.getAttribute('lang') === 'fa' ? 'en' : 'fa';
+        body.setAttribute('lang', newLang);
+        localStorage.setItem('language', newLang);
+        languageSwitch.checked = newLang === 'en';
+        updateLanguage();
+        updateDynamicContent();
+    }
+
+    function isBase64(str) {
+        if (!str || typeof str !== 'string') return false;
+        try {
+            return btoa(atob(str)) === str;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function decodeBase64(str) {
+        try {
+            return atob(str);
+        } catch (e) {
+            console.error('Failed to decode Base64:', e);
+            return null;
+        }
+    }
+
+    function formatSize(bytes) {
+        const lang = document.body.getAttribute('lang') || 'fa';
+        if (bytes === null || bytes === undefined || isNaN(bytes) || bytes < 0) {
+            return getTranslation('invalid');
+        }
+        if (bytes === 0) {
+            return getTranslation('used-up'); // تغییر از 'not-used' به 'used-up'
+        }
+        const k = 1024;
+        const units = lang === 'en'
+            ? ['Bytes', 'KB', 'MB', 'GB', 'TB']
+            : ['بایت', 'کیلوبایت', 'مگابایت', 'گیگابایت', 'ترابایت'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + units[i];
+    }
+
+    function toggleTheme() {
+        const body = document.body;
+        const themeSwitch = document.getElementById('themeSwitch');
+        if (body.classList.contains('light-theme')) {
+            body.classList.replace('light-theme', 'dark-theme');
+            localStorage.setItem('theme', 'dark');
+            themeSwitch.checked = true;
+        } else {
+            body.classList.replace('dark-theme', 'light-theme');
+            localStorage.setItem('theme', 'light');
+            themeSwitch.checked = false;
+        }
+    }
+
+    function copyText(text) {
+        if (!text) {
+            alert(getTranslation('no-text'));
+            return;
+        }
+        navigator.clipboard.writeText(text).then(() => {
+            alert(getTranslation('copy-success'));
+        }).catch(() => {
+            alert(getTranslation('copy-error'));
+        });
+    }
+
+    function showQR(text) {
+        if (!text) {
+            alert(getTranslation('qr-error'));
+            return;
+        }
+        const qrModal = document.getElementById('qrModal');
+        const qrCodeCanvas = document.getElementById('qrcode');
+        qrCodeCanvas.getContext('2d').clearRect(0, 0, qrCodeCanvas.width, qrCodeCanvas.height);
+        QRCode.toCanvas(qrCodeCanvas, text, {
+            width: 240,
+            margin: 4,
+            color: { dark: '#000000', light: '#ffffff' }
+        }, (error) => {
+            if (error) {
+                console.error('QR code generation failed:', error);
+                alert(getTranslation('qr-failed'));
+            } else {
+                qrModal.classList.add('show');
+            }
+        });
+    }
+
+    function closeQR() {
+        document.getElementById('qrModal').classList.remove('show');
+    }
+
+    function toggleAccordion(element, type) {
+        const content = element.nextElementSibling;
+        const isOpen = content.classList.contains('show');
+        if (type === 'main') {
+            document.querySelectorAll('.main-tab').forEach(item => {
+                const siblingContent = item.nextElementSibling;
+                if (siblingContent !== content) {
+                    siblingContent.classList.remove('show');
+                    item.classList.remove('active');
+                    item.setAttribute('aria-expanded', 'false');
+                }
+            });
+        } else if (type === 'sub') {
+            const parentAccordion = element.closest('.accordion-content');
+            parentAccordion.querySelectorAll('.sub-tab').forEach(item => {
+                const siblingContent = item.nextElementSibling;
+                if (siblingContent !== content) {
+                    siblingContent.classList.remove('show');
+                    item.classList.remove('active');
+                    item.setAttribute('aria-expanded', 'false');
+                }
+            });
+        }
+        if (isOpen) {
+            content.classList.remove('show');
+            element.classList.remove('active');
+            element.setAttribute('aria-expanded', 'false');
+        } else {
+            content.classList.add('show');
+            element.classList.add('active');
+            element.setAttribute('aria-expanded', 'true');
+        }
+    }
+
+    function parseConfigs(input) {
+        console.log('Parsing configs, input:', input);
+        if (!input || typeof input !== 'string' || input.trim() === '') {
+            console.warn('No valid config input provided');
+            return [];
+        }
+
+        let decodedInput = input;
+        if (isBase64(input)) {
+            decodedInput = decodeBase64(input);
+            console.log('Base64 decoded:', decodedInput);
+            if (!decodedInput) {
+                console.warn('Failed to decode Base64 input');
+                return [];
+            }
+        }
+
+        const configs = decodedInput
+            .split('\n')
+            .map(url => url.trim())
+            .filter(url => {
+                const isValid = url && url.match(/^(vless|vmess|trojan|ss|wireguard|tuic):\/\//);
+                console.log(`Config URL: ${url}, Valid: ${isValid}`);
+                return isValid;
+            });
+
+        console.log('Parsed configs:', configs);
+        return configs;
+    }
+
+    function updateDynamicContent() {
+        const lang = document.body.getAttribute('lang') || 'fa';
+        console.log('Updating dynamic content for language:', lang);
+
+        // Update user info
+        try {
+            const userNameElement = document.getElementById('user-name');
+            const statusElement = document.getElementById('status');
+            const statusTextElement = document.getElementById('status-text');
+            const progressBarElement = document.getElementById('progress-bar');
+            const uploadVolumeElement = document.getElementById('upload-volume');
+            const downloadVolumeElement = document.getElementById('download-volume');
+            const usedVolumeElement = document.getElementById('used-volume');
+            const remainingVolumeElement = document.getElementById('remaining-volume');
+            const totalVolumeElement = document.getElementById('total-volume');
+            const expiryDateElement = document.getElementById('expiry-date');
+
+            if (!userNameElement || !statusElement || !statusTextElement || !progressBarElement ||
+                !uploadVolumeElement || !downloadVolumeElement || !usedVolumeElement ||
+                !remainingVolumeElement || !totalVolumeElement || !expiryDateElement) {
+                throw new Error('One or more user info elements not found');
+            }
+
+            const safeEmail = sanitizeInput(data.email);
+            if (!safeEmail) {
+                userNameElement.textContent = getTranslation('data-error');
+                statusElement.className = 'status status-inactive';
+                statusTextElement.textContent = getTranslation('inactive');
+                console.warn('Invalid or missing email');
+                return;
+            }
+
+            const up = Number(data.up) || 0;
+            const down = Number(data.down) || 0;
+            const total = Number(data.total) || 0;
+            const usedVolume = up + down;
+            const remainingVolume = Math.max(0, total - usedVolume);
+            const usagePercentage = total > 0 ? Math.min((usedVolume / total) * 100, 100) : 0;
+            const isActive = data.enable && remainingVolume > 0;
+
+            userNameElement.textContent = `${getTranslation('user')}${safeEmail}`;
+            statusElement.className = `status ${isActive ? 'status-active' : 'status-inactive'}`;
+            statusTextElement.textContent = isActive ? getTranslation('active') : getTranslation('inactive');
+            progressBarElement.style.width = `${usagePercentage}%`;
+            uploadVolumeElement.textContent = formatSize(up);
+            downloadVolumeElement.textContent = formatSize(down);
+            usedVolumeElement.textContent = formatSize(usedVolume);
+            remainingVolumeElement.textContent = formatSize(remainingVolume);
+            totalVolumeElement.textContent = formatSize(total);
+            expiryDateElement.textContent = data.expiryTime && Number(data.expiryTime) > 0
+                ? new Date(Number(data.expiryTime)).toLocaleDateString(lang === 'fa' ? 'fa-IR' : 'en-US')
+                : getTranslation('unlimited');
+
+            console.log('User info updated:', {
+                email: safeEmail,
+                status: statusTextElement.textContent,
+                upload: uploadVolumeElement.textContent,
+                download: downloadVolumeElement.textContent,
+                used: usedVolumeElement.textContent,
+                remaining: remainingVolumeElement.textContent,
+                total: totalVolumeElement.textContent,
+                expiry: expiryDateElement.textContent
+            });
+        } catch (error) {
+            console.error('Error updating user info:', error);
+        }
+
+        // Update configs
+        try {
+            const configBox = document.getElementById('config-box');
+            if (!configBox) throw new Error('Config box element not found');
+
+            configBox.innerHTML = `<div class="config-title" data-i18n="configs">${getTranslation('configs')}</div>`;
+            let configArray = [];
+
+            if (data.suburl_content && typeof data.suburl_content === 'string' && data.suburl_content.trim() !== '') {
+                if (data.suburl_content.match(/^(vless|vmess|trojan|ss|wireguard|tuic):\/\//)) {
+                    configArray = [data.suburl_content];
+                    console.log('Single config detected:', data.suburl_content);
+                } else {
+                    configArray = parseConfigs(data.suburl_content);
+                }
+            } else {
+                console.warn('No suburl_content provided or invalid:', data.suburl_content);
+            }
+
+            if (configArray.length > 0) {
+                configArray.forEach((url, index) => {
+                    const configItem = document.createElement('div');
+                    configItem.className = 'config-item';
+                    const safeUrl = sanitizeInput(url);
+                    const escapedUrl = safeUrl.replace(/'/g, "\\'");
+                    configItem.innerHTML = `
+                        <span class="config-text">${getTranslation('config')}${index + 1}</span>
+                        <div class="config-actions">
+                            <i class="fas fa-copy" role="button" tabindex="0" aria-label="کپی کانفیگ" onclick="copyText('${escapedUrl}')"></i>
+                            <i class="fas fa-qrcode" role="button" tabindex="0" aria-label="نمایش QR کد" onclick="showQR('${escapedUrl}')"></i>
+                        </div>
+                    `;
+                    configBox.appendChild(configItem);
+                    console.log(`Rendered config ${index + 1}:`, safeUrl);
+                });
+            } else {
+                configBox.innerHTML += `
+                    <div class="config-item">
+                        <span class="config-text">${getTranslation('no-config')}${
+                            data.suburl_content ? getTranslation('no-config-data') : getTranslation('no-config-provided')
+                        }</span>
+                    </div>
+                `;
+                console.log('No valid configs to render');
+            }
+        } catch (error) {
+            console.error('Error updating configs:', error);
+            const configBox = document.getElementById('config-box');
+            if (configBox) {
+                configBox.innerHTML = `
+                    <div class="config-title" data-i18n="configs">${getTranslation('configs')}</div>
+                    <div class="config-item">
+                        <span class="config-text">${getTranslation('no-config')}${getTranslation('no-config-provided')}</span>
+                    </div>
+                `;
+            }
+        }
+    }
+
+    function initEventListeners() {
+        document.getElementById('themeSwitch').addEventListener('change', toggleTheme);
+        document.getElementById('languageSwitch').addEventListener('change', toggleLanguage);
+
+        document.querySelectorAll('.accordion-header').forEach(header => {
+            header.addEventListener('click', () => toggleAccordion(header, header.classList.contains('main-tab') ? 'main' : 'sub'));
+            header.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    toggleAccordion(header, header.classList.contains('main-tab') ? 'main' : 'sub');
+                }
+            });
+        });
+
+        document.querySelector('.close-btn').addEventListener('click', closeQR);
+        document.querySelector('.close-btn').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                closeQR();
+            }
+        });
+    }
+
+    window.onload = function() {
+        console.log('Window loaded, initializing...');
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        const savedLanguage = localStorage.getItem('language') || 'fa';
+        document.body.classList.add(savedTheme + '-theme');
+        document.body.setAttribute('lang', savedLanguage);
+        document.getElementById('themeSwitch').checked = savedTheme === 'dark';
+        document.getElementById('languageSwitch').checked = savedLanguage === 'en';
+        updateLanguage();
+        updateDynamicContent();
+        initEventListeners();
+    };
+</script>
+</body>
+</html>
