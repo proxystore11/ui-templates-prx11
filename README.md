@@ -2,7 +2,7 @@
 پوسته جذاب برای پنل سنایی 
 <p align="center">
   <a href="https://github.com/dev-ir/xui-templates-blackeyes" target="_blank" rel="noopener noreferrer">
-    <img src="https://github.com/dev-ir/xui-templates-blackeyes/blob/master/screenshot.png" alt="SubPage screenshots" width="800" height="auto">
+    <img src="prx11.png" alt="SubPage screenshots" width="800" height="auto">
   </a>
 </p>
 
