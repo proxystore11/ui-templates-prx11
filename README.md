@@ -19,7 +19,7 @@ Before Usage, make sure you have XUI-Subscription-Template installed.
 ## Usage
 
 ```bash
-sudo git clone https://github.com/proxystore11/ui-templates-prx11.git /opt/DVHOST/views/templates/blackeyes/
+sudo git clone https://github.com/proxystore11/ui-templates-prx11.git /opt/DVHOST/views/templates/prx11/
 sudo sed -i 's/^TEMPLATE_NAME=.*/TEMPLATE_NAME=prx11/' /opt/DVHOST/dvhost.config
 ```
 
