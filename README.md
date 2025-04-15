@@ -92,4 +92,4 @@ systemctl status DVHOST_TEMPLATE
 - USDT (TRC20): ``
 
 ## 📧 Join Telegram Channel
-TG: https://t.me/+EpErnDsDPhw3ZThk
+TG: https://t.me/proxystore11
