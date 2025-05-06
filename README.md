@@ -1,4 +1,5 @@
 # ui-templates-prx11
+# باگ ها،مشکلات، پیشنهادات را ایشو کنید.
 
 <p align="center">
   <a href="" target="_blank" rel="noopener noreferrer">
@@ -86,7 +87,6 @@ TEMPLATE_NAME=prx11
 systemctl restart DVHOST_TEMPLATE
 systemctl status DVHOST_TEMPLATE
 ```
-*مشکلات،باگ ها را ایشو کنید*
 ## 🙏 Support with Crypto 
 **We don't need financial support, only Star (⭐) is enough, thank you.**
 - USDT (TRC20): ``
